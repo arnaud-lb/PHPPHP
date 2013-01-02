@@ -149,5 +149,22 @@ return array(
             new ParamData('callback', false, 'callable'),
             new ParamData('parameter', false, null, true),
         )
+    ),
+    'get_class' => new FunctionData\Internal(
+        function(Executor $executor, array $args, Zval $return) {
+            if (!isset($args[0]) || $args[0]->isNull()) {
+                $ci = $executor->getCurrent()->ci;
+                if (!$ci) {
+                    throw new \RuntimeException('get_class() called without object from outside a class');
+                }
+            } else {
+                $ci = $args[0]->getValue();
+            }
+            $return->setValue($ci->getClassEntry()->getName());
+        },
+        false,
+        array(
+            new ParamData('object', false, null, true),
+        )
     )
 );

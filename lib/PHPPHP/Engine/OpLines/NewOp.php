@@ -11,7 +11,9 @@ class NewOp extends \PHPPHP\Engine\OpLine {
         $classEntry = $data->executor->getClassStore()->get($className);
         $args = $this->op2->toArray();
         $instance = $classEntry->instantiate($data, array(), $args);
-        $this->result->setValue(Zval::factory($instance));
+        if ($this->result) {
+            $this->result->setValue(Zval::factory($instance));
+        }
         $data->nextOp();
     }
 }
