@@ -51,7 +51,6 @@ class Executor {
 
     public function execute(OpArray $opArray, array &$symbolTable = array(), FunctionData $function = null, array $args = array(), Zval $result = null) {
         if ($this->shutdown) return;
-        $opArray->registerExecutor($this);
         $scope = new ExecuteData($this, $opArray, $function);
         $scope->arguments = $args;
 
@@ -60,11 +59,14 @@ class Executor {
         }
         $this->stack[] = $scope;
         $this->current = $scope;
+
         if ($symbolTable || $function) {
             $scope->symbolTable =& $symbolTable;
         } else {
             $scope->symbolTable =& $this->executorGlobals->symbolTable;
         }
+
+        $opArray->registerExecutor($this);
 
         while (!$this->shutdown && $scope->opLine) {
             $ret = $scope->opLine->execute($scope);

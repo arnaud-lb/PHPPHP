@@ -20,8 +20,9 @@ class OpArray implements \ArrayAccess, \IteratorAggregate {
     public function registerExecutor(Executor $executor) {
         if (!$this->executor) {
             $this->executor = $executor;
+            $executeData = $executor->getCurrent();
             foreach ($this->compiledVariables as $variable) {
-                $variable->setExecutor($executor);
+                $variable->setExecuteData($executeData);
             }
         }   
     }
